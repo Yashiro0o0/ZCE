@@ -193,6 +193,11 @@ int main(int argc, char **argv)
 		}
 		return 0;		//不成功登陆时,退出程序
 	}
+
+	if (!ReqQryMarketStatus(DialogConn))
+	{
+		return -1;
+	}
 	if (Order_LimitPrice(DialogConn, ParticipantId, UserId, ClientId))
 	{
 		std::cout << "下期货限价单成功" << std::endl << std::endl;
@@ -355,5 +360,64 @@ bool Order_LimitPrice(ExchgConnectionHandle conn, const char *ParticipantId, con
 
 	//释放掉我们分配的API数据包对象
 	API_FreePackage(APIpkg);
+	return ret;
+}
+
+bool ReqQryMarketStatus(ExchgConnectionHandle conn)
+{
+	bool ret = false;
+	switch (MarketStatus)
+	{
+		case 8:
+		{
+			std::cout << "系统未装载，未就绪！" << std::endl;
+			break;
+		}
+		case 1:
+		{
+			std::cout << "系统就绪，可以登录！" << std::endl;
+			ret = true;
+			break;
+		}
+		case 3:
+		{
+			std::cout << "开盘竞价入单开始阶段！" << std::endl;
+			ret = true;
+			break;
+		}
+		case 13:
+		{
+			std::cout << "开盘竞价入单结束阶段，开盘集合竞价开始！" << std::endl;
+			ret = true;
+			break;
+		}
+		case 14:
+		{
+			std::cout << "开盘竞价结束！" << std::endl;
+			ret = true;
+			break;
+		}
+		case 4: case 9:
+		{
+			std::cout << "连续交易阶段！" << std::endl;
+			ret = true;
+			break;
+		}
+		case 5: case 11:
+		{
+			std::cout << "暂停阶段！" << std::endl;
+			break;
+		}
+		case 7: case 10:
+		{
+			std::cout << "交易闭市！" << std::endl;
+			break;
+		}
+		case 6:
+		{
+			std::cout << "系统挂起阶段" << std::endl;
+			break;
+		}
+	}
 	return ret;
 }

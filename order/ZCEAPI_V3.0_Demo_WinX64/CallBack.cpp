@@ -59,22 +59,17 @@ int OnAPILogin(void * CallBackArg, ExchgConnectionHandle conn, MsgPackageHandle 
 }
 
 //退出的回调函数
-int OnAPILogout(void * CallBackArg, ExchgConnectionHandle conn, MsgPackageHandle pkg)
+int OnAPILogOut(void *CallBackArg, ExchgConnectionHandle conn, MsgPackageHandle pkg)
 {
-    //判断是否退出成功
-    if (API_FieldIsNull(pkg, FID_ErrorCode))
-    {
-        std::cout << "Logout Successfully!" << std::endl;
-    }
-    else
-    {
-        std::cout << "Fail In Logout!" << std::endl;
-    }
-
-    //存储退出应答包
-    APIpkgTofile(pkg, 1);
-
-    return 0;
+	if (API_FieldIsNull(pkg, FID_ErrorCode))
+	{
+		std::cout << "Logout Successfully !" << std::endl;
+	}
+	else
+	{
+		std::cout << "Failed in Logout!" << std::endl;
+	}
+	return 0;
 }
 
 //链路连接的回调函数
@@ -106,6 +101,7 @@ void OnAPIClose(void * CallBackArg, ExchgConnectionHandle conn, int error_code, 
 //收到数据包的回调函数
 int OnRec(void * CallBackArg, ExchgConnectionHandle conn, MsgPackageHandle pkg)
 {
+
     if (API_GetPID(pkg) == 0x10002)
     {
         //获取SR503的涨跌停价
@@ -120,7 +116,7 @@ int OnRec(void * CallBackArg, ExchgConnectionHandle conn, MsgPackageHandle pkg)
         }
     }
 
-
+	if(API_GetPID(pkg) == )
 
     APIpkgTofile(pkg, 1);
     return 0;
